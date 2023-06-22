@@ -35,3 +35,4 @@ GET     /session/:sessionId/transactions      Returns all transactions of a give
 Notes:
 You can use postman to test the api by sending urlencoded body or raw JSON
 The typescript is compiled into javascript in the ./dist folder
+The database already has 4 players and only the player with id 1 already has a wallet, session and transactions
