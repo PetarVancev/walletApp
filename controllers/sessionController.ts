@@ -1,22 +1,24 @@
+import { Request, Response } from "express";
+
 import database from "../db/db";
 import sessionInterface from "../interfaces/sessionInterface";
 
 const db = database.db;
-const pgp = database.pgp;
 
-async function createSession(playerId: number) {
-  let response;
+async function createSession(req: Request, res: Response) {
+  let message;
+  const playerId: number = parseInt(req.params.playerId);
   const query = "INSERT INTO sessions (player_id) VALUES ($1) RETURNING *";
-  db.oneOrNone(query, [playerId])
-    .then((insertedRow: sessionInterface) => {
-      if (insertedRow) {
-        console.log("Session succesfully created", insertedRow);
-      }
+  db.one(query, [playerId])
+    .then((session: sessionInterface) => {
+      message = "Session succesfully created";
+      console.log(message, session);
+      res.status(200).send(session);
     })
     .catch((error: Error) => {
-      console.error("Error occurred while creating session", error);
+      message = "Error occurred while creating session";
+      console.error(message, error);
     });
-  return response;
 }
 
 async function getSession(sessionId: number): Promise<sessionInterface> {
@@ -28,6 +30,7 @@ async function getSession(sessionId: number): Promise<sessionInterface> {
         return session;
       } else {
         console.log("No session with id " + sessionId + " found");
+        throw new Error("No session with id " + sessionId + " found");
       }
     })
     .catch((error: Error) => {

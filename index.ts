@@ -8,25 +8,22 @@ app.use(express.urlencoded({ extended: true }));
 
 const port = 8000;
 
+let count = 0;
+
 app.post("/:playerId/createwallet", (req: Request, res: Response) => {
-  const playerid: number = parseInt(req.params.playerId);
-  walletController.createWallet(playerid);
+  walletController.createWallet(req, res);
 });
 
 app.post("/:playerId/createsession", (req: Request, res: Response) => {
-  const playerid: number = parseInt(req.params.playerId);
-  sessionController.createSession(playerid);
+  sessionController.createSession(req, res);
 });
 
 app.post("/:playerId/withdraw", (req: Request, res: Response) => {
-  const playerid: number = parseInt(req.params.playerId);
-  walletController.withdraw(playerid, req.body.amount, req.body.sessionId);
+  walletController.withdraw(req, res);
 });
 
 app.post("/:playerId/deposit", (req: Request, res: Response) => {
-  const playerid: number = parseInt(req.params.playerId);
-  const amount: number = parseFloat(req.body.amount);
-  walletController.deposit(playerid, amount, req.body.sessionId);
+  walletController.deposit(req, res);
 });
 
 app.listen(port, () => {
