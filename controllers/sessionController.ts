@@ -6,23 +6,33 @@ const pgp = database.pgp;
 
 async function createSession(playerId: number) {
   let response;
-  const insertQuery =
-    "INSERT INTO sessions (player_id) VALUES ($1) RETURNING *";
-  db.oneOrNone(insertQuery, [playerId])
+  const query = "INSERT INTO sessions (player_id) VALUES ($1) RETURNING *";
+  db.oneOrNone(query, [playerId])
     .then((insertedRow: sessionInterface) => {
       if (insertedRow) {
-        console.log(
-          "Row inserted successfully into wallets table:",
-          insertedRow
-        );
-      } else {
-        response = "Wallet for player already exists.";
+        console.log("Session succesfully created", insertedRow);
       }
     })
     .catch((error: Error) => {
-      console.error("Error occurred while inserting row:", error);
+      console.error("Error occurred while creating session", error);
     });
   return response;
 }
 
-export default createSession;
+async function getSession(sessionId: number): Promise<sessionInterface> {
+  const query = "SELECT * FROM sessions WHERE id = $1";
+  return db
+    .one(query, sessionId)
+    .then((session) => {
+      if (session) {
+        return session;
+      } else {
+        console.log("No session with id " + sessionId + " found");
+      }
+    })
+    .catch((error: Error) => {
+      console.error("Error occurred while getting session", error.message);
+    });
+}
+
+export default { createSession, getSession };
