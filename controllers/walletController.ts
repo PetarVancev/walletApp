@@ -50,7 +50,8 @@ async function withdraw(req: Request, res: Response) {
   const playerId: number = parseInt(req.params.playerId);
   const { amount, sessionId }: { amount: number; sessionId: number } = req.body;
   const session: sessionInterface = await sessionController.getSession(
-    sessionId
+    sessionId,
+    res
   );
   if (amount <= 0) {
     message = "The amount must be positive";
@@ -84,7 +85,8 @@ async function withdraw(req: Request, res: Response) {
             });
         }
       } else {
-        message = "You are not on a valid session for the player";
+        message =
+          "You are not on a valid session for the player or the player doesnt exist";
         res.status(400).send(message);
         console.error(message);
       }
@@ -95,9 +97,11 @@ async function withdraw(req: Request, res: Response) {
 async function deposit(req: Request, res: Response) {
   let message;
   const playerId: number = parseInt(req.params.playerId);
-  const { amount, sessionId }: { amount: number; sessionId: number } = req.body;
+  const amount: number = parseFloat(req.body.amount);
+  const sessionId: number = parseInt(req.body.sessionId);
   const session: sessionInterface = await sessionController.getSession(
-    sessionId
+    sessionId,
+    res
   );
   if (amount <= 0) {
     message = "The amount must be positive";
@@ -116,7 +120,7 @@ async function deposit(req: Request, res: Response) {
             transactionsController.insertTransaction(
               playerId,
               sessionId,
-              -amount,
+              amount,
               wallet.balance
             );
             res.status(200).send(wallet);
@@ -126,46 +130,13 @@ async function deposit(req: Request, res: Response) {
             res.status(500).send(error.message);
           });
       } else {
-        message = "You are not on a valid session for the player";
-        res.status(400).send(message);
+        message =
+          "You are not on a valid session for the player or the player doesnt exist";
+        res.status(500).send(message);
         console.error(message);
       }
     }
   }
 }
-
-// async function deposit(playerId: number, amount: number, sessionId: number) {
-//   const wallet: walletInterface = await getWallet(playerId);
-//   const session: sessionInterface = await sessionController.getSession(
-//     sessionId
-//   );
-//   if (amount <= 0) {
-//     console.log("The amount must be positive");
-//   } else {
-//     if (session) {
-//       if (session.player_id == playerId) {
-//         wallet.balance += amount;
-//         console.log(wallet.balance);
-//         const query =
-//           "UPDATE wallets SET balance = $1 WHERE player_id = $2 RETURNING *";
-//         return db
-//           .one(query, [wallet.balance, playerId])
-//           .then((wallet) => {
-//             transactionsController.insertTransaction(
-//               playerId,
-//               sessionId,
-//               amount
-//             );
-//             console.log(wallet);
-//           })
-//           .catch((error: Error) => {
-//             console.error("Error occurred while withdrawing", error.message);
-//           });
-//       } else {
-//         console.log("You are not on a valid session for the player");
-//       }
-//     }
-//   }
-// }
 
 export default { createWallet, withdraw, deposit };

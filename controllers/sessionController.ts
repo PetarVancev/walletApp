@@ -21,7 +21,10 @@ async function createSession(req: Request, res: Response) {
     });
 }
 
-async function getSession(sessionId: number): Promise<sessionInterface> {
+async function getSession(
+  sessionId: number,
+  res: Response
+): Promise<sessionInterface> {
   const query = "SELECT * FROM sessions WHERE id = $1";
   return db
     .one(query, sessionId)
@@ -35,6 +38,7 @@ async function getSession(sessionId: number): Promise<sessionInterface> {
     })
     .catch((error: Error) => {
       console.error("Error occurred while getting session", error.message);
+      res.status(500).send("Couldnt find session with the specified id");
     });
 }
 
