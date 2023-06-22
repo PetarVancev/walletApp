@@ -18,23 +18,23 @@ async function createSession(req: Request, res: Response) {
     .catch((error: Error) => {
       message = "Error occurred while creating session";
       console.error(message, error);
+      res.status(500).send(message);
     });
 }
 
-async function getSession(sessionId: number): Promise<sessionInterface> {
+async function getSession(
+  sessionId: number,
+  res: Response
+): Promise<sessionInterface> {
+  let message;
   const query = "SELECT * FROM sessions WHERE id = $1";
   return db
     .one(query, sessionId)
-    .then((session) => {
-      if (session) {
-        return session;
-      } else {
-        console.log("No session with id " + sessionId + " found");
-        throw new Error("No session with id " + sessionId + " found");
-      }
-    })
+    .then((session) => session)
     .catch((error: Error) => {
-      console.error("Error occurred while getting session", error.message);
+      message = "Error occurred while getting session";
+      console.error(message, error.message);
+      res.status(500).send(message);
     });
 }
 
