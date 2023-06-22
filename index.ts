@@ -9,8 +9,6 @@ app.use(express.urlencoded({ extended: true }));
 
 const port = 8000;
 
-let count = 0;
-
 app.post("/player/:playerId/createwallet", (req: Request, res: Response) => {
   walletController.createWallet(req, res);
 });
@@ -29,7 +27,6 @@ app.post("/player/:playerId/deposit", (req: Request, res: Response) => {
 
 app.get("/player/:playerId/transactions", (req: Request, res: Response) => {
   const playerId: number = parseInt(req.params.playerId);
-  console.log(playerId);
   transactionsController.getPlayerTransactions(playerId, res);
 });
 

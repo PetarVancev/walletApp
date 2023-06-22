@@ -8,11 +8,12 @@ const db = database.db;
 async function insertTransaction(
   playerId: number,
   sessionId: number,
-  amount: number
+  amount: number,
+  balance: number
 ) {
   const query =
-    "INSERT INTO transactions (player_id, session_id, amount) VALUES ($1, $2, $3) RETURNING *";
-  db.one(query, [playerId, sessionId, amount])
+    "INSERT INTO transactions (player_id, session_id, amount, balance) VALUES ($1, $2, $3, $4) RETURNING *";
+  db.one(query, [playerId, sessionId, amount, balance])
     .then((insertedRow: transactionsInterface) => {
       console.log("Transaction made succesfully", insertedRow);
     })

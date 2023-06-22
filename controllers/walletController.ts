@@ -73,7 +73,8 @@ async function withdraw(req: Request, res: Response) {
               transactionsController.insertTransaction(
                 playerId,
                 sessionId,
-                -amount
+                -amount,
+                wallet.balance
               );
               res.status(200).send(wallet);
             })
@@ -115,7 +116,8 @@ async function deposit(req: Request, res: Response) {
             transactionsController.insertTransaction(
               playerId,
               sessionId,
-              -amount
+              -amount,
+              wallet.balance
             );
             res.status(200).send(wallet);
           })
