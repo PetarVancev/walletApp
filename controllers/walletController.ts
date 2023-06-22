@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 
 import database from "../db/db";
-import walletInterface from "../interfaces/walletInterface";
+
 import sessionController from "./sessionController";
-import sessionInterface from "../interfaces/sessionInterface";
 import transactionsController from "./transactionsController";
+
+import walletInterface from "../interfaces/walletInterface";
+import sessionInterface from "../interfaces/sessionInterface";
 
 const db = database.db;
 
